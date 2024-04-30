@@ -1,0 +1,29 @@
+{% if user.is_authenticated %}
+Hi {{ user.username }}!
+<p></p>
+<form action="{% url 'logout' %}" method="post">
+    {% csrf_token %}
+    <input type="submit" value="Logout?">
+</form>
+
+<a href = "{% url 'blogs:createblog'%}">
+    <button type="button">Write a blog!</button>
+</a>
+{% else %}
+  <p>You are not logged in</p>
+  <a href="{% url 'login' %}">Log In</a> |
+  <a href="{% url 'accounts:signup' %}">Sign Up</a>
+{% endif %}
+
+
+{% if latest_blog_list %}
+    <h1> The latest blogs! </h1>
+    <ul>
+        {% for blog in latest_blog_list %}
+        <li><a href="{% url 'blogs:detail' blog.id %}"> {{blog.name}} </a></li>
+        {% endfor %}
+    </ul>
+
+{% else %}
+    <h1> There is no blog yet! </h1>
+{% endif %}

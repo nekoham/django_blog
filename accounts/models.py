@@ -2,11 +2,11 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 # Create your models here.
 
-class Roles(models.Model):
+class Role(models.Model):
     name = models.CharField(max_length=10)
 
     def __str__(self):
-        return self.role
+        return self.name
 
-class Users(AbstractUser):
-    role = models.ForeignKey(Roles, on_delete=models.SET_NULL(), help_text="role of the user")
+class User(AbstractUser):
+    role = models.ForeignKey(Role, on_delete=models.SET_NULL ,null=True , help_text="role of the user", related_name="role_user")

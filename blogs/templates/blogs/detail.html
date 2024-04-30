@@ -1,0 +1,46 @@
+{% if request.user.is_authenticated %}
+    {% if request.user.is_superuser or request.user.id == blog.user.id %}
+    <a href = "{% url 'blogs:updateblog' blog.id %}">
+        <button type="button">Edit</button>
+    </a>
+    <a href = "{% url 'blogs:deleteblog' blog.id %}">
+        <button type="button">Delete</button>
+    </a>
+    {% endif %}
+{% endif %}
+
+<h1> Topic : {{blog.name}} </h1>
+<h2> posted by : {{blog.user}} at {{blog.created_on}} </h2>
+{% if blog.updated_on != blog.created_on %}
+<h2> last edited at {{blog.updated_on}}</h2>
+{% endif %}
+<h2> tag : {{blog.tag.name}}  </h2>
+<h3> content : {{blog.content}} </h3>
+{% for comment in blog.comment_blog.all %}
+<p></p>
+<div style="background-color: darksalmon;">
+    <p style="font-weight: bold;"> edited at {{comment.updated_on}}</p>
+    <p> commented by : {{comment.user}} at {{comment.created_on}}</p>
+    <p> comment : {{comment.content}} 
+    {% if request.user.is_authenticated and request.user.id == comment.user.id %}
+        <a href = "{% url 'blogs:updatecomment' comment.id %}">
+            <button type="button">Edit</button>
+        </a>
+        <a href = "{% url 'blogs:deletecomment' comment.id %}">
+            <button type="button">Delete</button>
+        </a>
+    {% endif %}
+    </p>
+</div>
+<p></p>
+{% endfor %}
+
+{% if request.user.is_authenticated %}
+<a href = "{% url 'blogs:createcomment' blog.id %}">
+    <button type="button">Comment</button>
+</a>
+{% endif %}
+
+<a href = "{% url 'blogs:index' %}">
+    <button type="button">Go to Index</button>
+</a>
