@@ -28,5 +28,7 @@ class Comment(models.Model):
     created_on = models.DateTimeField(auto_now_add=True, help_text="Date of creation")
     updated_on = models.DateTimeField(auto_now=True, help_text="Date of update")
 
+    def __str__(self):
+        return self.content
 
 

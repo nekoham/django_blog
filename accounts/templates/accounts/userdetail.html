@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+    <ul>
+        <li id="username">Username: </li>
+        <li id="email">Email: </li>
+        <li id="date_joined">Creation Date:
+        </li>
+    </ul>
+    <a id="toDelete">
+        <button id="deleteButton">Delete?</button>
+    </a>
+    <a id="toUpdate">
+        <button id="updateButton">Update?</button>
+    </a>
+    <a id="indexRef" href="http://127.0.0.1:8000/accounts/">
+        <button type="button" id="index">Go back</button>
+    </a>
+</body>
+<script>
+    window.onload = () => {
+        userDetail()
+    }
+    function userDetail()
+    {
+        fetch(`/api/v1/accounts/${window.location.pathname.split("/")[2]}`)
+            .then(response => response.json())
+            .then(data => {
+                let username = document.getElementById('username');
+                username.textContent += data.username
+
+                let email = document.getElementById('email');
+                email.textContent += data.email
+
+                let date_joined = document.getElementById('date_joined');
+                date_joined.textContent += data.date_joined
+
+                let refDelete = document.getElementById('toDelete');
+                refDelete.setAttribute('href', `http://127.0.0.1:8000/accounts/${data.id}/delete`);
+
+                let refUpdate = document.getElementById('toUpdate');
+                refUpdate.setAttribute('href', `http://127.0.0.1:8000/accounts/${data.id}/update`);
+
+            })
+            .catch(error => console.error('Error fetching the user:', error));
+    }
+</script>
+
+</html>

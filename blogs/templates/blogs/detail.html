@@ -1,46 +1,114 @@
-{% if request.user.is_authenticated %}
-    {% if request.user.is_superuser or request.user.id == blog.user.id %}
-    <a href = "{% url 'blogs:updateblog' blog.id %}">
-        <button type="button">Edit</button>
+<!DOCTYPE html>
+<html>
+
+<body>
+    <ul>
+        <li id="name">Topic: </li>
+        <li id="tag">Tag: </li>
+        <li id="user">Post by: </li>
+        <li id="updated_on">Last Edit: </li>
+        <li id="created_on">Created: </li>
+        <li id="content">Content: </li>
+    </ul>
+    <a id="toDelete">
+        <button id="deleteButton">Delete?</button>
     </a>
-    <a href = "{% url 'blogs:deleteblog' blog.id %}">
-        <button type="button">Delete</button>
+    <a id="toUpdate">
+        <button id="updateButton">Update?</button>
     </a>
-    {% endif %}
-{% endif %}
+    <a id="toComment">
+        <button id="commentButton">Comment?</button>
+    </a>
+    <a id="indexRef" href="http://127.0.0.1:8000/blogs/">
+        <button type="button" id="index">Go back</button>
+    </a>
 
-<h1> Topic : {{blog.name}} </h1>
-<h2> posted by : {{blog.user}} at {{blog.created_on}} </h2>
-{% if blog.updated_on != blog.created_on %}
-<h2> last edited at {{blog.updated_on}}</h2>
-{% endif %}
-<h2> tag : {{blog.tag.name}}  </h2>
-<h3> content : {{blog.content}} </h3>
-{% for comment in blog.comment_blog.all %}
-<p></p>
-<div style="background-color: darksalmon;">
-    <p style="font-weight: bold;"> edited at {{comment.updated_on}}</p>
-    <p> commented by : {{comment.user}} at {{comment.created_on}}</p>
-    <p> comment : {{comment.content}} 
-    {% if request.user.is_authenticated and request.user.id == comment.user.id %}
-        <a href = "{% url 'blogs:updatecomment' comment.id %}">
-            <button type="button">Edit</button>
-        </a>
-        <a href = "{% url 'blogs:deletecomment' comment.id %}">
-            <button type="button">Delete</button>
-        </a>
-    {% endif %}
-    </p>
-</div>
-<p></p>
-{% endfor %}
+    <div id="comment_section">
+    
+    </div>
+</body>
+<script>
 
-{% if request.user.is_authenticated %}
-<a href = "{% url 'blogs:createcomment' blog.id %}">
-    <button type="button">Comment</button>
-</a>
-{% endif %}
+    window.onload = () => {
+        let refDelete = document.getElementById('toDelete');
+        refDelete.setAttribute('href', `http://127.0.0.1:8000/blogs/deleteblog/${window.location.pathname.split("/")[2]}`);
 
-<a href = "{% url 'blogs:index' %}">
-    <button type="button">Go to Index</button>
-</a>
+        let refUpdate = document.getElementById('toUpdate');
+        refUpdate.setAttribute('href', `http://127.0.0.1:8000/blogs/updateblog/${window.location.pathname.split("/")[2]}`);
+        
+        let refComment = document.getElementById('toComment');
+        refComment.setAttribute('href', `http://127.0.0.1:8000/blogs/createcomment/${window.location.pathname.split("/")[2]}`);
+
+        blogDetail()
+
+        commentList()
+    }
+    function blogDetail() {
+        fetch(`/api/v1/blogs/${window.location.pathname.split("/")[2]}`)
+            .then(response => response.json())
+            .then(data => {
+                let name = document.getElementById('name');
+                name.textContent += data.name
+
+                let tag = document.getElementById('tag');
+                tag.textContent += data.tag
+
+                let user = document.getElementById('user');
+                user.textContent += data.user
+
+                let updated_on = document.getElementById('updated_on');
+                updated_on.textContent += data.updated_on
+
+                let created_on = document.getElementById('created_on');
+                created_on.textContent += data.created_on
+
+                let content = document.getElementById('content');
+                content.textContent += data.content
+
+            })
+            .catch(error => console.error('Error fetching the blog:', error));
+    }
+
+    function commentList() {
+        fetch(`/api/v1/comments/${window.location.pathname.split("/")[2]}/list`)
+            .then(response => response.json())
+            .then(data => {
+                const comment_section = document.getElementById("comment_section");
+                data.forEach(comment => {
+                    let ulNode = document.createElement('ul')
+                    let user = document.createElement('li');
+                    let created_date = document.createElement('li');
+                    let content = document.createElement('li');
+
+                    let refCommentDelete = document.createElement('a');
+                    let refCommentUpdate = document.createElement('a');
+                    refCommentDelete.setAttribute('href', `http://127.0.0.1:8000/blogs/deletecomment/${comment.id}`);
+                    refCommentUpdate.setAttribute('href', `http://127.0.0.1:8000/blogs/updatecomment/${comment.id}`);
+
+                    let commentDelete = document.createElement('button');
+                    let commentUpdate = document.createElement('button');
+                    commentDelete.textContent = "Delete?"
+                    commentUpdate.textContent = "Edit?"
+
+                    user.textContent = "Commenter: "+ comment.user
+                    created_date.textContent = "Created Date: "+ comment.created_on
+                    content.textContent = "Content: "+ comment.content
+
+                    ulNode.appendChild(user)
+                    ulNode.appendChild(created_date)
+                    ulNode.appendChild(content)
+
+                    refCommentDelete.appendChild(commentDelete);
+                    refCommentUpdate.appendChild(commentUpdate);
+                    
+                    ulNode.appendChild(refCommentDelete)
+                    ulNode.appendChild(refCommentUpdate)
+
+                    comment_section.appendChild(ulNode)
+                });
+            })
+            .catch(error => console.error('Error fetching blogs:', error));
+    }
+</script>
+
+</html>

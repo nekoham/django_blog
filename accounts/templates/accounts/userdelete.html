@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+    <div>
+        <p>Are you sure?</p>
+        <button type="button" id="confirm">Confirm?</button>
+        <a id="cancelRef"><button type="button" id="cancel">Cancel</button></a>
+    </div>
+</body>
+
+<script>
+    window.onload = () => {
+        let cancelRef = document.getElementById("cancelRef");
+        cancelRef.href = `http://127.0.0.1:8000/accounts/${window.location.pathname.split('/')[2]}/`
+
+        confirmEl = document.getElementById("confirm");
+
+        confirmEl.addEventListener("click", userDelete);
+    }
+    function getCookie(name) 
+    {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    function userDelete() 
+        {
+            fetch(`/api/v1/accounts/${window.location.pathname.split("/")[2]}/delete/`,
+                {
+                    method: 'delete',
+                    headers:
+                    {
+                        "X-CSRFToken": getCookie('csrftoken'),
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.href = 'http://127.0.0.1:8000/accounts';
+                    }
+                    else {
+                        console.error('Error deleting the snippet:', response.status);
+                    }
+                })
+                .catch(error => console.error('Error fetching accounts:', error));
+        }
+</script>
+
+
+</html>

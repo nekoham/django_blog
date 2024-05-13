@@ -3,10 +3,9 @@
 
 <body>
     <h1 id="username"></h1>
-    <a id="refCreate"><button id="create">Create blog?</button></a>
-    <a id="refRegister"><button id="register">Register?</button></a>
-    <a id="refLogin"><button id="login">Login?</button></a>
-    <a id="refAccount"><button id="account">Go to Accounts?</button></a>
+    <a id="refRegister" href="http://127.0.0.1:8000/accounts/register"><button id="register">Register?</button></a>
+    <a id="refLogin" href="http://127.0.0.1:8000/accounts/login"><button id="login">Login?</button></a>
+    <a id="refBlog" href="http://127.0.0.1:8000/blogs/"><button id="snippet">Go to Blogs??</button></a>
     <button id="logout">Logout?</button>
     <ul id="list">
 
@@ -18,25 +17,10 @@
         let logoutEl = document.getElementById('logout');
         logoutEl.addEventListener("click", userLogout)
 
-        let username = document.getElementById("username");
-        username.textContent = '{{ user }}'
-
-        const refAccount = document.getElementById("refAccount");
-        refAccount.setAttribute('href', 'http://127.0.0.1:8000/accounts/')
-
-        const refRegister = document.getElementById("refRegister");
-        refRegister.setAttribute('href', 'http://127.0.0.1:8000/accounts/register')
-
-        const refLogin = document.getElementById('refLogin');
-        refLogin.setAttribute('href', 'http://127.0.0.1:8000/accounts/login')
-
-        const refCreate = document.getElementById("refCreate");
-        refCreate.setAttribute('href', 'http://127.0.0.1:8000/blogs/createblog')
-
-        blogList()
+        userList()
     }
-
-    function getCookie(name) {
+    function getCookie(name) 
+    {
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {
             const cookies = document.cookie.split(';');
@@ -51,24 +35,30 @@
         }
         return cookieValue;
     }
-    function blogList() {
-        fetch("/api/v1/blogs/list")
+    function userList() 
+    {
+        fetch("/api/v1/accounts/list")
             .then(response => response.json())
             .then(data => {
+                let username = document.getElementById("username");
+                username.textContent = '{{ user }}'
+
                 const ulNode = document.getElementById("list");
-                data.forEach(blog => {
+                data.forEach(user => {
+                    console.log(user)
                     const listItem = document.createElement('li');
                     const link = document.createElement('a');
-                    link.textContent = blog.name + ': ' + blog.content;
-                    link.setAttribute('href', `http://127.0.0.1:8000/blogs/${blog.id}`)
+                    link.textContent = user.username + ': ' + user.email;
+                    link.setAttribute('href', `http://127.0.0.1:8000/accounts/${user.id}`)
                     listItem.appendChild(link)
                     ulNode.appendChild(listItem)
                 });
             })
-            .catch(error => console.error('Error fetching blogs:', error));
+            .catch(error => console.error('Error fetching users:', error));
+
     }
-    
-    function userLogout() {
+    function userLogout() 
+    {
         fetch(`/api/v1/accounts/logout/`, {
             method: 'post',
             headers:
@@ -79,7 +69,7 @@
         })
             .then(response => {
                 if (response.ok) {
-                    window.location.href = 'http://127.0.0.1:8000/blogs';
+                    window.location.href = 'http://127.0.0.1:8000/accounts';
                 }
                 else {
                     console.error('Error logging out:', response.status);

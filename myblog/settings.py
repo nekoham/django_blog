@@ -25,13 +25,16 @@ SECRET_KEY = "django-insecure-x2oweo71zfshmatv1(#zg!9g1=b65*xm5gdsq-tt^r2c_7828h
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['magical-sponge-recently.ngrok-free.app', '127.0.0.1']
 
 AUTH_USER_MODEL = "accounts.User"
 # Application definition
 
 INSTALLED_APPS = [
+    "rest_framework",
+    "accounts.account_api",
     "accounts",
+    "blogs.api",
     "blogs",
     "django.contrib.admin",
     "django.contrib.auth",

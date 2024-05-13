@@ -1,6 +1,66 @@
-<form method="post">
-    {% csrf_token %}
-    <p>Are you sure you want to delete Comment : "{{ object }}"?</p>
-    <input type="submit" value="Confirm">
-    <a href = "{% url 'blogs:detail' blog.id %}"><button type="button">No</button></a>
-</form>
+<!DOCTYPE html>
+<html>
+
+<body>
+    <div>
+        <p>Are you sure?</p>
+        <button type="button" id="confirm">Confirm?</button>
+        <a id="cancelRef"><button type="button" id="cancel">Cancel</button></a>
+    </div>
+</body>
+
+<script>
+    window.onload = () => {
+        commentGet()
+    }
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    function commentDelete(data) {
+        fetch(`/api/v1/comments/{{pk}}/delete/`,
+            {
+                method: 'delete',
+                headers:
+                {
+                    "X-CSRFToken": getCookie('csrftoken'),
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log(data)
+                    window.location.href = `http://127.0.0.1:8000/blogs/${data.blog}`
+                } else {
+                    console.error('Error deleting the comment:', error)
+                }
+            })
+
+            .catch(error => console.error('Error fetching comments:', error));
+    }
+    function commentGet() {
+        fetch(`/api/v1/comments/${window.location.pathname.split("/")[3]}`)
+            .then(response => response.json())
+            .then(data => {
+                confirmEl = document.getElementById("confirm");
+                confirmEl.addEventListener("click", () => commentDelete(data));
+                
+                let cancelRef = document.getElementById("cancelRef");
+                cancelRef.href = `http://127.0.0.1:8000/blogs/${data.blog}/`
+            })
+            .catch(error => console.error('Error fetching comments:', error));
+    }
+
+</script>
+
+</html>

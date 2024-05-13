@@ -1,9 +1,122 @@
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="update">
-    <a href = "{% url 'blogs:detail' blog.id %}">
-        <button type="button">Cancel</button>
-    </a>
-</form>
+<!DOCTYPE html>
+<html>
 
+<body>
+    <form method="POST" action="" id="updateForm">
+        <div>
+            <label>Name : </label>
+            <input type="text" id="name">        
+        </div>
+        <div>
+            <label>Tag: </label>
+            <select id="tag">
+
+            </select>
+        </div>
+        <div>
+            <label>Content : </label>
+            <textarea id="content"></textarea>
+        </div>
+        <div>
+            <input type="submit">
+        </div>
+    </form>
+    <a id="cancelRef"><button type="button" id="cancel">Cancel</button></a>
+</body>
+<script>
+    window.onload = () => {
+
+        let cancelRef = document.getElementById("cancelRef");
+        cancelRef.href = `http://127.0.0.1:8000/blogs/${window.location.pathname.split("/")[3]}/`
+
+        const formEl = document.getElementById("updateForm");
+        formEl.addEventListener('submit', blogUpdate);
+        TagGet()
+        blogGet()
+    }
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    
+    function TagGet() {
+        fetch(`/api/v1/tags/list`)
+            .then(response => response.json())
+            .then(data => {
+                let tagNode = document.getElementById('tag');
+                //console.log(data)
+
+                data.forEach(tag => {
+                    let option = document.createElement('option')
+                    option.setAttribute('value', tag.name)
+                    option.textContent = tag.name
+                    tagNode.appendChild(option)
+                }); 
+            })
+            .catch(error => console.error('Error fetching tags:', error));
+    }
+
+    function blogGet() {
+        fetch(`/api/v1/blogs/${window.location.pathname.split("/")[3]}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                let name = document.getElementById('name');
+                name.value = data.name
+
+                let tag = document.getElementById('tag');
+                tag.value = data.tag
+
+                let content = document.getElementById('content');
+                content.value = data.content
+            })
+            .catch(error => console.error('Error fetching blogs:', error));
+    }
+    
+    function blogUpdate(event) {
+        event.preventDefault();
+
+        const data = {
+            comment_blog: [],
+            name: document.getElementById('name').value,
+            tag: document.getElementById('tag').value,            
+            content: document.getElementById('content').value,
+        };
+
+        const jsonData = JSON.stringify(data);
+        console.log(jsonData)
+        fetch(`/api/v1/blogs/${window.location.pathname.split("/")[3]}/update/`, {
+            method: 'put',
+            headers:
+            {
+                "X-CSRFToken": getCookie('csrftoken'),
+                'Content-Type': 'application/json',
+            },
+            body: jsonData
+        })
+            .then(response => {
+                console.log(response)
+                if (response.ok) {
+                    window.location.href = `http://127.0.0.1:8000/blogs/${window.location.pathname.split("/")[3]}`;
+                }
+                else {
+                    console.error('Error creating the blogpet:', response.status);
+                }
+            })
+            .catch(error => console.error('Error fetching blogpets:', error));
+    }
+    
+</script>
+
+</html>

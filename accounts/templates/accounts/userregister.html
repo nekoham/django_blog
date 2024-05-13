@@ -4,22 +4,34 @@
 <body>
     <form method="POST" action="" id="createForm">
         <div>
-            <label>Comment : </label>
-            <textarea id="comment"></textarea>
+            <label>Username : </label>
+            <input type="text" id="username">
+        </div>
+        <div>
+            <label>Email : </label>
+            <input type="text" id="email">
+        </div>
+        <div>
+            <label>Password: </label>
+            <input type="password" id="password">
+        </div>
+        <div>
+            <label>Confirm Password: </label>
+            <input type="text" id="confirmPassword">
         </div>
         <div>
             <input type="submit">
         </div>
     </form>
-    <a id="cancelRef"><button id="cancel">Cancel</button></a>
 </body>
+
 <script>
     window.onload = () => {
-        let cancelRef = document.getElementById("cancelRef")
-        cancelRef.setAttribute('href', `http://127.0.0.1:8000/blogs/{{blog_id}}`)
         const formEl = document.getElementById("createForm")
-        formEl.addEventListener('submit', commentCreate);
-    }
+        formEl.addEventListener('submit', userCreate);
+
+      }
+
     function getCookie(name) {
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {
@@ -35,16 +47,27 @@
         }
         return cookieValue;
     }
-    function commentCreate(event) {
+    function userCreate(event) {
         event.preventDefault();
 
+        let password = document.getElementById('password');
+        let confirmPassword = document.getElementById('confirmPassword');
+
+        if (password.value != confirmPassword.value) {
+            alert("Passwords don't match");
+            return false;
+        }
+
         const data = {
-            content: document.getElementById('comment').value,
+            username: document.getElementById('username').value,
+            email: document.getElementById('email').value,
+            password: password.value,
         };
+
 
         const jsonData = JSON.stringify(data);
 
-        fetch(`/api/v1/comments/{{blog_id}}/create/`, {
+        fetch(`/api/v1/accounts/register/`, {
             method: 'post',
             headers:
             {
@@ -55,13 +78,13 @@
         })
             .then(response => {
                 if (response.ok) {
-                    window.location.href = `http://127.0.0.1:8000/blogs/{{blog_id}}`;
+                    window.location.href = 'http://127.0.0.1:8000/accounts';
                 }
                 else {
-                    console.error('Error creating the comment:', response.status);
+                    console.error('Error creating the user:', response.status);
                 }
             })
-            .catch(error => console.error('Error fetching comments:', error));
+            .catch(error => console.error('Error fetching user:', error));
     }
 
 </script>
