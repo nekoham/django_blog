@@ -32,9 +32,7 @@ AUTH_USER_MODEL = "accounts.User"
 
 INSTALLED_APPS = [
     "rest_framework",
-    "accounts.account_api",
     "accounts",
-    "blogs.api",
     "blogs",
     "django.contrib.admin",
     "django.contrib.auth",

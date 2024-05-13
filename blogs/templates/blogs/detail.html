@@ -70,7 +70,7 @@
     }
 
     function commentList() {
-        fetch(`/api/v1/comments/${window.location.pathname.split("/")[2]}/list`)
+        fetch(`/api/v1/blogs/comments/${window.location.pathname.split("/")[2]}/list`)
             .then(response => response.json())
             .then(data => {
                 const comment_section = document.getElementById("comment_section");

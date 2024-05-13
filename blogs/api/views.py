@@ -56,7 +56,7 @@ class CreateCommentData(generics.CreateAPIView):
     permission_classes = [IsAuthenticated] 
 
     def perform_create(self, serializer):
-        return serializer.save(blog_id = self.request.path.split("/")[4], user = self.request.user)
+        return serializer.save(blog_id = self.request.path.split("/")[5], user = self.request.user)
 
 class UpdateCommentData(generics.UpdateAPIView):
     queryset = Comment.objects.all()

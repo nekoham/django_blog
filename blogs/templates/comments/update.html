@@ -33,7 +33,7 @@
         return cookieValue;
     }
     function commentGet() {
-        fetch(`/api/v1/comments/${window.location.pathname.split("/")[3]}`)
+        fetch(`/api/v1/blogs/comments/${window.location.pathname.split("/")[3]}`)
             .then(response => response.json())
             .then(data => {
                 let cancelRef = document.getElementById("cancelRef");
@@ -57,7 +57,7 @@
 
         const jsonData = JSON.stringify(comment);
 
-        fetch(`/api/v1/comments/${window.location.pathname.split("/")[3]}/update/`, {
+        fetch(`/api/v1/blogs/comments/${window.location.pathname.split("/")[3]}/update/`, {
             method: 'put',
             headers:
             {

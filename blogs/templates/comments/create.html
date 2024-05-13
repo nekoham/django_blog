@@ -44,7 +44,7 @@
 
         const jsonData = JSON.stringify(data);
 
-        fetch(`/api/v1/comments/{{blog_id}}/create/`, {
+        fetch(`/api/v1/blogs/comments/{{blog_id}}/create/`, {
             method: 'post',
             headers:
             {

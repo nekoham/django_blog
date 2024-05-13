@@ -1,5 +1,5 @@
 from accounts.models import User
-from accounts.account_api.serializers import UserLoginSerializer, UserSerializer
+from accounts.api.serializers import UserLoginSerializer, UserSerializer
 from accounts.permissions import IsOwnerOrReadOnly, IsAdminOrReadOnly
 from rest_framework.response import Response
 from rest_framework import generics, status

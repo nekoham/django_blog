@@ -29,7 +29,7 @@
         return cookieValue;
     }
     function commentDelete(data) {
-        fetch(`/api/v1/comments/{{pk}}/delete/`,
+        fetch(`/api/v1/blogs/comments/{{pk}}/delete/`,
             {
                 method: 'delete',
                 headers:
@@ -49,7 +49,7 @@
             .catch(error => console.error('Error fetching comments:', error));
     }
     function commentGet() {
-        fetch(`/api/v1/comments/${window.location.pathname.split("/")[3]}`)
+        fetch(`/api/v1/blogs/comments/${window.location.pathname.split("/")[3]}`)
             .then(response => response.json())
             .then(data => {
                 confirmEl = document.getElementById("confirm");
