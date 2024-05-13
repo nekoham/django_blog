@@ -1,8 +1,3 @@
-from django.shortcuts import get_object_or_404
-from django.urls import reverse_lazy
-from rest_framework.views import APIView
-from blogs.models import Blog, Comment
-from blogs.serializers import TagSerializer, BlogSerializer, CommentSerializer
 from django.views.generic import TemplateView
 
 

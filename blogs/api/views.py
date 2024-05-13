@@ -1,21 +1,10 @@
-from rest_framework import generics, status
+from rest_framework import generics
 from blogs.api.serializers import BlogSerializer, CommentSerializer, TagSerializer
 from blogs.models import Blog, Comment, Tag
 from blogs.permissions import IsAdminOrReadOnly, IsOwnerOrReadOnly
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticated
 import requests
-import json
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from linebot import LineBotApi, WebhookHandler
-from linebot.exceptions import InvalidSignatureError
-from linebot.models import (
-    MessageEvent,
-    TextMessage,
-    TextSendMessage,
-    StickerMessage,
-    StickerSendMessage,
-)
+
 
 # Create your views here.
 
